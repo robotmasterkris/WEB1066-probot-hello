@@ -6,13 +6,7 @@ env:
   # - NODE_VERSION=8-jessie
   - NODE_VERSION=10-jessie
 
-script: 
-  # this is the "test" stage
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker build -t node:$NODE_VERSION --build-arg NODE_IMAGE="node:${NODE_VERSION}" .
-  - docker images
-  - docker tag node:$NODE_VERSION $DOCKER_USERNAME/probot-hello:$NODE_VERSION-$(git rev-parse HEAD)
-  - docker push $DOCKER_USERNAME/probot-hello:$NODE_VERSION-$(git rev-parse HEAD)
+
 
 stages:
   - test
@@ -20,6 +14,16 @@ stages:
 
 jobs:
   include:
+    - stage: test
+      install: skip
+      script: 
+        # this is the "test" stage
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker build -t node:$NODE_VERSION --build-arg NODE_IMAGE="node:${NODE_VERSION}" .
+        - docker images
+        - docker tag node:$NODE_VERSION $DOCKER_USERNAME/probot-hello:$NODE_VERSION-$(git rev-parse HEAD)
+        - docker push $DOCKER_USERNAME/probot-hello:$NODE_VERSION-$(git rev-parse HEAD)
+
     # parallelise three npm-targets (test, lint, coverage) - more concise way to specify this is with matrix
     - stage: npm-targets
       name: "Test 10-jessie"
