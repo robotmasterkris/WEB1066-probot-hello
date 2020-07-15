@@ -28,7 +28,7 @@ jobs:
         - docker run --rm $DOCKER_USERNAME/probot-hello:$NODE_VERSION-$(git rev-parse HEAD) npm run $NPM_TARGET
       env:
         - NODE_VERSION=10-jessie
-        - NPM_TARGET=tes   
+        - NPM_TARGET=test 
     - stage: npm-targets
       name: "Test 10-jessie"
       install: skip
